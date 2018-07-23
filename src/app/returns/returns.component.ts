@@ -51,7 +51,7 @@ export class ReturnsComponent implements OnInit {
         item.reasonCode = JSON.parse(item.reasonCode.toString());
         item.isSelected = false;
         return item;
-      });      
+      });
     });
   }
 

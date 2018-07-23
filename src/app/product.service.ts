@@ -19,6 +19,8 @@ export interface ReturnItem {
 })
 export class ProductService {
 
+  baseURL_Api_Endpoint: string = 'http://localhost/ngMat/api.php';
+
   constructor(private http: HttpClient) { }
 
   getReportDate(d: Date): string {
@@ -31,7 +33,7 @@ export class ProductService {
       operation: 'read',
       tableName: 'returns'
     };
-    return this.http.get<ReturnItem[]>('http://localhost/ngMat/api.php', {params: params});
+    return this.http.get<ReturnItem[]>(this.baseURL_Api_Endpoint, {params: params});
   }
 
   addReturnProduct(product: ReturnItem): Observable<ReturnItem> {
@@ -45,7 +47,7 @@ export class ProductService {
       reasonCode: JSON.stringify(product.reasonCode),
       packingNumber: product.packingNumber.toString()
     };
-    return this.http.get<ReturnItem>('http://localhost/ngMat/api.php', {params: params});
+    return this.http.get<ReturnItem>(this.baseURL_Api_Endpoint, {params: params});
   }
 
   editReturnProduct(product: ReturnItem, id: number): Observable<ReturnItem> {
@@ -60,7 +62,7 @@ export class ProductService {
       reasonCode: JSON.stringify(product.reasonCode),
       packingNumber: product.packingNumber.toString()
     };
-    return this.http.get<ReturnItem>('http://localhost/ngMat/api.php', {params: params});
+    return this.http.get<ReturnItem>(this.baseURL_Api_Endpoint, {params: params});
   }
 
   deleteReturnProduct(id: number): Observable<any> {
@@ -69,7 +71,7 @@ export class ProductService {
       tableName: 'returns',
       id: id.toString()
     };
-    return this.http.get('http://localhost/ngMat/api.php', {params: params});
+    return this.http.get(this.baseURL_Api_Endpoint, {params: params});
   }
 
 }
