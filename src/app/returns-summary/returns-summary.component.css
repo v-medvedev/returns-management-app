@@ -1,0 +1,11 @@
+[mat-table] {
+    width: 100%;
+}
+
+[mat-footer-row] {
+    background-color: #8cbbeb;
+}
+
+[mat-footer-row] td {
+    font-weight: 600;
+}
