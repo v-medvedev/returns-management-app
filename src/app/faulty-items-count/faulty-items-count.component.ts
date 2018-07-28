@@ -2,31 +2,31 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductService } from '../product.service';
 
-export interface ReturnItemCount {
+export interface FaultyItemCount {
   dateOfReturn: Date;
   numberOfReturns: number;  
 }
 
 @Component({
-  selector: 'app-returns-count',
-  templateUrl: './returns-count.component.html',
-  styleUrls: ['./returns-count.component.css']
+  selector: 'app-faulty-items-count',
+  templateUrl: './faulty-items-count.component.html',
+  styleUrls: ['./faulty-items-count.component.css']
 })
-export class ReturnsCountComponent implements OnInit {
+export class FaultyItemsCountComponent implements OnInit {
 
   displayedColumns: string[] = ['dateOfReturn', 'numberOfReturns'];
-  dataSource = new MatTableDataSource<ReturnItemCount>();
+  dataSource = new MatTableDataSource<FaultyItemCount>();
 
   constructor(private productService: ProductService) { }
 
   ngOnInit() {
-    this.productService.getReturnItems().subscribe(data => {
+    this.productService.getFaultyItems().subscribe(data => {
       const countObj = data.reduce((acc, obj) => {
         acc[obj.dateOfReturn.toString()] = (acc[obj.dateOfReturn.toString()] || 0) + obj.returnNumber;
         return acc;
       }, {});
       console.log(countObj);
-      let tableData: ReturnItemCount[] = [];
+      let tableData: FaultyItemCount[] = [];
       for (let sDate in countObj) {
         tableData.push({
           dateOfReturn: new Date(sDate), 

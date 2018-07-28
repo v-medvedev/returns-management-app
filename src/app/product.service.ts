@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 
@@ -14,13 +14,29 @@ export interface ReturnItem {
   isSelected?: boolean;
 }
 
+export interface FaultyItem {
+  id?: number,
+  dateOfReturn: Date;
+  magentoOrderNo: string;
+  returnNumber: number;
+  stockNumber: string;
+  reasonCode: string[];
+  faultDescription: string;
+  isSelected?: boolean;
+}
+
+export interface ReportData {
+  returns: ReturnItem[],
+  faulty_items: FaultyItem[]
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  baseURL_Api_Endpoint: string = 'http://localhost/ngMat/api.php';
-
+  private baseURL_Api_Endpoint: string = './api.php';
+  
   constructor(private http: HttpClient) { }
 
   getReportDate(d: Date): string {
@@ -28,18 +44,18 @@ export class ProductService {
     return monthNames[d.getMonth()] + "-" + d.getFullYear();
   }
 
-  getReturnProducts(): Observable<ReturnItem[]> {
+  // Return Items
+
+  getReturnItems(): Observable<ReturnItem[]> {
     let params = {
-      operation: 'read',
-      tableName: 'returns'
+      action: 'getReturnItems'
     };
     return this.http.get<ReturnItem[]>(this.baseURL_Api_Endpoint, {params: params});
   }
 
-  addReturnProduct(product: ReturnItem): Observable<ReturnItem> {
+  addReturnItem(product: ReturnItem): Observable<ReturnItem> {
     let params = {
-      operation: 'add',
-      tableName: 'returns',
+      action: 'addReturnItem',
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
       magentoOrderNo: product.magentoOrderNo.toString(),
       returnNumber: product.returnNumber.toString(),
@@ -50,10 +66,9 @@ export class ProductService {
     return this.http.get<ReturnItem>(this.baseURL_Api_Endpoint, {params: params});
   }
 
-  editReturnProduct(product: ReturnItem, id: number): Observable<ReturnItem> {
+  editReturnItem(product: ReturnItem, id: number): Observable<ReturnItem> {
     let params = {
-      operation: 'edit',
-      tableName: 'returns',
+      action: 'editReturnItem',
       id: id.toString(),
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
       magentoOrderNo: product.magentoOrderNo.toString(),
@@ -65,13 +80,67 @@ export class ProductService {
     return this.http.get<ReturnItem>(this.baseURL_Api_Endpoint, {params: params});
   }
 
-  deleteReturnProduct(id: number): Observable<any> {
+  deleteReturnItem(id: number): Observable<any> {
     let params = {
-      operation: 'delete',
-      tableName: 'returns',
+      action: 'deleteReturnItem',
       id: id.toString()
     };
     return this.http.get(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  // Faulty Items
+
+  getFaultyItems(): Observable<FaultyItem[]> {
+    let params = {
+      action: 'getFaultyItems'
+    };
+    return this.http.get<FaultyItem[]>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  addFaultyItem(product: FaultyItem): Observable<FaultyItem> {
+    let params = {
+      action: 'addFaultyItem',
+      dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
+      magentoOrderNo: product.magentoOrderNo.toString(),
+      returnNumber: product.returnNumber.toString(),
+      stockNumber: product.stockNumber.toString(),
+      reasonCode: JSON.stringify(product.reasonCode),
+      faultDescription: product.faultDescription.toString()
+    };
+    return this.http.get<FaultyItem>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  editFaultyItem(product: FaultyItem, id: number): Observable<FaultyItem> {
+    let params = {
+      action: 'editFaultyItem',
+      id: id.toString(),
+      dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
+      magentoOrderNo: product.magentoOrderNo.toString(),
+      returnNumber: product.returnNumber.toString(),
+      stockNumber: product.stockNumber.toString(),
+      reasonCode: JSON.stringify(product.reasonCode),
+      faultDescription: product.faultDescription.toString()
+    };
+    return this.http.get<FaultyItem>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  deleteFaultyItem(id: number): Observable<any> {
+    let params = {
+      action: 'deleteFaultyItem',
+      id: id.toString()
+    };
+    return this.http.get(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  // Report
+
+  getReportData(dFrom: string, dTo: string): Observable<ReportData> {
+    let params = {
+      action: 'getReportData',
+      dFrom: dFrom,
+      dTo: dTo
+    };
+    return this.http.get<ReportData>(this.baseURL_Api_Endpoint, {params: params});
   }
 
 }

@@ -1,0 +1,15 @@
+<form>
+  <mat-form-field class='dt-picker'>
+    <input matInput [matDatepicker]="dtFrom" placeholder="Start Date" [formControl]="dateFrom">
+    <mat-datepicker-toggle matSuffix [for]="dtFrom"></mat-datepicker-toggle>
+    <mat-datepicker #dtFrom></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field class='dt-picker'>
+    <input matInput [matDatepicker]="dtTo" placeholder="Finish Date" [formControl]="dateTo">
+    <mat-datepicker-toggle matSuffix [for]="dtTo"></mat-datepicker-toggle>
+    <mat-datepicker #dtTo></mat-datepicker>
+  </mat-form-field>
+</form>
+<div class="button-row">
+  <button mat-raised-button color="warn" (click)="createReport()">Do Report</button>
+</div>

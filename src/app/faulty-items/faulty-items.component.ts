@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
 
 import { AppComponent } from '../app.component';
-import { ProductService, ReturnItem } from '../product.service';
+import { ProductService, FaultyItem } from '../product.service';  
 
 export interface IReasonCode {
   value: string;
@@ -10,56 +10,60 @@ export interface IReasonCode {
 }
 
 @Component({
-  selector: 'app-returns',
-  templateUrl: './returns.component.html',
-  styleUrls: ['./returns.component.css']
+  selector: 'app-faulty-items',
+  templateUrl: './faulty-items.component.html',
+  styleUrls: ['./faulty-items.component.css']
 })
-export class ReturnsComponent implements OnInit, OnDestroy {
-  
+export class FaultyItemsComponent implements OnInit, OnDestroy {
+
   @ViewChild(MatSort) sort: MatSort;
-  
-  displayedColumns: string[] = ['dateOfReturn', 'magentoOrderNo', 'returnNumber', 'stockNumber', 'reasonCode', 'packingNumber'];
-  dataSource? = new MatTableDataSource<ReturnItem>();
+
+  displayedColumns: string[] = ['dateOfReturn', 'magentoOrderNo', 'returnNumber', 'stockNumber', 'reasonCode', 'faultDescription'];
+  dataSource = new MatTableDataSource<FaultyItem>();
   isEditProduct: boolean = false;
   editProductIdx: number = -1;
-  editedProduct: ReturnItem = null;
-  
+  editedProduct: FaultyItem = null;
+
   reasonCodes: IReasonCode[] = [
-    { value: '1', viewValue: 'Dont like the item' },
-    { value: '2', viewValue: 'Looks different to image onsite' },
-    { value: '3', viewValue: 'Ordered more than one size' },
-    { value: '4', viewValue: 'Too big' },
-    { value: '5', viewValue: 'Too small' },
-    { value: '6', viewValue: 'Faulty' },
-    { value: '7', viewValue: 'Incorrect item received' },
-    { value: '8', viewValue: 'Quality not as expected' },
-    { value: '9', viewValue: 'Late delivery' },
+    { value: '1', viewValue: 'Marked/Stains' },
+    { value: '2', viewValue: 'Scratched Sole' },
+    { value: '3', viewValue: 'Broken Heel' },
+    { value: '4', viewValue: 'Broken Zips' },
+    { value: '5', viewValue: 'Broken Strap/Broken Buckles' },
+    { value: '6', viewValue: 'Inner Sole Coming Away' },
+    { value: '7', viewValue: 'Damaged Laces' },
+    { value: '8', viewValue: 'Two Different Sizes' },
+    { value: '9', viewValue: 'Pulled Threads' },
+    { value: '10', viewValue: 'Two Of The Same Foot' },
+    { value: '11', viewValue: 'Ripped' },
+    { value: '12', viewValue: 'Worn' },
+    { value: '13', viewValue: 'Smells' },
     { value: '0', viewValue: 'No reason' }
   ];
 
-  returnItem?: ReturnItem = {
+  faultyItem?: FaultyItem = {
     dateOfReturn: new Date(),
     magentoOrderNo: '',
     returnNumber: 1,
     stockNumber: '',
     reasonCode: [],
-    packingNumber: '',
+    faultDescription: '',
     isSelected: false
   };
 
   constructor(private productService: ProductService, private appComponent: AppComponent) { }
 
   ngOnInit() {
-    this.dataSource = this.appComponent.dataSourceReturns;
+    this.dataSource = this.appComponent.dataSourceFaulty;
     this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy(): void {
-    this.appComponent.dataSourceReturns = this.dataSource;
+    this.appComponent.dataSourceFaulty = this.dataSource;
   }
 
-  selectRow(data: ReturnItem, index: number) {
-    this.returnItem = Object.assign({}, data);
+  selectRow(data: FaultyItem, index: number) {
+    this.faultyItem = Object.assign({}, data);
     // update selection
     this.dataSource.data.forEach((element, i) => {
       if (i != index + 1) {
@@ -70,7 +74,7 @@ export class ReturnsComponent implements OnInit, OnDestroy {
     });
     // adjust buttons
     if (!this.dataSource.data[index+1].isSelected) {
-      this.returnItem = this.resetItem();
+      this.faultyItem = this.resetItem();
     } else {
       this.isEditProduct = true;
       this.editedProduct = data;
@@ -79,19 +83,19 @@ export class ReturnsComponent implements OnInit, OnDestroy {
   }
 
   addProduct() {
-    this.productService.addReturnItem(Object.assign({}, this.returnItem)).subscribe(data => {
+    this.productService.addFaultyItem(Object.assign({}, this.faultyItem)).subscribe(data => {
       data.isSelected = false;
       data.reasonCode = JSON.parse(data.reasonCode.toString());
       const tableData = this.dataSource.data;
       tableData.push(data);
       this.dataSource.data = tableData;
     });
-    this.returnItem = this.resetItem();
+    this.faultyItem = this.resetItem();
   }
 
   editProduct() {
-    this.editedProduct = Object.assign({}, this.returnItem);
-    this.productService.editReturnItem(Object.assign({}, this.returnItem), this.editedProduct.id).subscribe(data => {
+    this.editedProduct = Object.assign({}, this.faultyItem);
+    this.productService.editFaultyItem(Object.assign({}, this.faultyItem), this.editedProduct.id).subscribe(data => {
       const tableData = this.dataSource.data.map(item => {
         item.isSelected = false;
         if (item.id == this.editedProduct.id) {
@@ -102,22 +106,22 @@ export class ReturnsComponent implements OnInit, OnDestroy {
       });
       this.dataSource.data = tableData;
     });
-    this.returnItem = this.resetItem();
+    this.faultyItem = this.resetItem();
   }
 
   deleteProduct() {
     const tableData = this.dataSource.data;
-    this.productService.deleteReturnItem(this.editedProduct.id).subscribe(data => {
+    this.productService.deleteFaultyItem(this.editedProduct.id).subscribe(data => {
       const tableData = this.dataSource.data.filter(item => {
         item.isSelected = false;
         return item.id != this.editedProduct.id;
       });
       this.dataSource.data = tableData;
     });
-    this.returnItem = this.resetItem();
+    this.faultyItem = this.resetItem();
   }
 
-  resetItem(): ReturnItem {
+  resetItem(): FaultyItem {
     this.isEditProduct = false;
     this.editProductIdx = -1;
     return {
@@ -126,7 +130,7 @@ export class ReturnsComponent implements OnInit, OnDestroy {
       returnNumber: 1,
       stockNumber: '',
       reasonCode: [],
-      packingNumber: '',
+      faultDescription: '',
       isSelected: false
     }
   }

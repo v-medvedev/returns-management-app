@@ -3,20 +3,20 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProductService } from '../product.service';
 
 @Component({
-  selector: 'app-returns-summary',
-  templateUrl: './returns-summary.component.html',
-  styleUrls: ['./returns-summary.component.css']
+  selector: 'app-faulty-items-summary',
+  templateUrl: './faulty-items-summary.component.html',
+  styleUrls: ['./faulty-items-summary.component.css']
 })
-export class ReturnsSummaryComponent implements OnInit {
+export class FaultyItemsSummaryComponent implements OnInit {
 
   columns?;
   displayedColumns?;
   dataSource = new MatTableDataSource();
-    
+
   constructor(private productService: ProductService) { }
 
   ngOnInit() {
-    this.productService.getReturnItems().subscribe(data => {
+    this.productService.getFaultyItems().subscribe(data => {
       // Filter Reason Codes
       this.columns = [];
       this.displayedColumns = [];
