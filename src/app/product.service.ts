@@ -25,6 +25,15 @@ export interface FaultyItem {
   isSelected?: boolean;
 }
 
+export interface NoInfoItem {
+  id?: number,
+  dateOfReturn: Date;
+  returnNumber: number;
+  stockNumber: string;
+  details: string;
+  isSelected?: boolean;
+}
+
 export interface ReportData {
   returns: ReturnItem[],
   faulty_items: FaultyItem[]
@@ -36,6 +45,7 @@ export interface ReportData {
 export class ProductService {
 
   private baseURL_Api_Endpoint: string = './api.php';
+  // private baseURL_Api_Endpoint: string = 'http://localhost/api.php';
   
   constructor(private http: HttpClient) { }
 
@@ -127,6 +137,46 @@ export class ProductService {
   deleteFaultyItem(id: number): Observable<any> {
     let params = {
       action: 'deleteFaultyItem',
+      id: id.toString()
+    };
+    return this.http.get(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  // No Info Items
+
+  getNoInfoItems(): Observable<NoInfoItem[]> {
+    let params = {
+      action: 'getNoInfoItems'
+    };
+    return this.http.get<NoInfoItem[]>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  addNoInfoItem(product: NoInfoItem): Observable<NoInfoItem> {
+    let params = {
+      action: 'addNoInfoItem',
+      dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
+      returnNumber: product.returnNumber.toString(),
+      stockNumber: product.stockNumber.toString(),
+      details: product.details.toString()
+    };
+    return this.http.get<NoInfoItem>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  editNoInfoItem(product: NoInfoItem, id: number): Observable<NoInfoItem> {
+    let params = {
+      action: 'editNoInfoItem',
+      id: id.toString(),
+      dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
+      returnNumber: product.returnNumber.toString(),
+      stockNumber: product.stockNumber.toString(),
+      details: product.details.toString()
+    };
+    return this.http.get<NoInfoItem>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  deleteNoInfoItem(id: number): Observable<any> {
+    let params = {
+      action: 'deleteNoInfoItem',
       id: id.toString()
     };
     return this.http.get(this.baseURL_Api_Endpoint, {params: params});

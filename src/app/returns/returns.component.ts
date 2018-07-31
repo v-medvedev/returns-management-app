@@ -60,16 +60,19 @@ export class ReturnsComponent implements OnInit, OnDestroy {
 
   selectRow(data: ReturnItem, index: number) {
     this.returnItem = Object.assign({}, data);
+    let selectionState: boolean;
     // update selection
     this.dataSource.data.forEach((element, i) => {
-      if (i != index + 1) {
+      if (element.id != this.returnItem.id) {
         element.isSelected = false;
+        selectionState = false;
       } else {
         element.isSelected = !element.isSelected;
+        selectionState = element.isSelected;
       }      
     });
     // adjust buttons
-    if (!this.dataSource.data[index+1].isSelected) {
+    if (!selectionState) {
       this.returnItem = this.resetItem();
     } else {
       this.isEditProduct = true;

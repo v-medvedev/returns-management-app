@@ -3,37 +3,36 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MyNavComponent } from './my-nav/my-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatCheckboxModule, MatInputModule, MatButtonModule, MatSelectModule, MatSidenavModule, MatIconModule, MatListModule, MatTableModule, MatNativeDateModule, MatProgressSpinnerModule, MatSortModule } from '@angular/material';
+import { MatToolbarModule, MatCheckboxModule, MatInputModule, MatButtonModule, MatSelectModule, MatSidenavModule, MatIconModule, MatListModule, MatTableModule, MatNativeDateModule, MatProgressSpinnerModule, MatSortModule, MatTabsModule } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
-import { ProductService } from './product.service';
-
 import { ReturnsComponent } from './returns/returns.component';
 import { ReturnsCountComponent } from './returns-count/returns-count.component';
-import { ReturnsSummaryComponent } from './returns-summary/returns-summary.component';
-
 import { FaultyItemsComponent } from './faulty-items/faulty-items.component';
 import { FaultyItemsCountComponent } from './faulty-items-count/faulty-items-count.component';
-import { FaultyItemsSummaryComponent } from './faulty-items-summary/faulty-items-summary.component';
-
+import { NoinfoComponent } from './noinfo/noinfo.component';
+import { NoinfoCountComponent } from './noinfo-count/noinfo-count.component';
 import { ReportComponent } from './report/report.component';
+import { ReasonKeysComponent } from './reason-keys/reason-keys.component';
 
 const appRoutes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'returns' },
   { path: 'returns', component: ReturnsComponent },
-  // { path: 'returns-count', component: ReturnsCountComponent },
-  // { path: 'returns-summary', component: ReturnsSummaryComponent },
+  { path: 'returns-count', component: ReturnsCountComponent },
   { path: 'faulty', component: FaultyItemsComponent },
-  // { path: 'faulty-count', component: FaultyItemsCountComponent },
-  // { path: 'faulty-summary', component: FaultyItemsSummaryComponent },
+  { path: 'faulty-count', component: FaultyItemsCountComponent },
+  { path: 'no-info', component: NoinfoComponent },
+  { path: 'no-info-count', component: NoinfoCountComponent },
   { path: 'report', component: ReportComponent },
+  { path: 'reason-keys', component: ReasonKeysComponent },
   { path: '**', redirectTo: 'returns' }
 ];
 
@@ -42,12 +41,13 @@ const appRoutes: Routes = [
     AppComponent,
     MyNavComponent,
     ReturnsComponent,
-    ReturnsCountComponent,
-    ReturnsSummaryComponent,
     FaultyItemsComponent,
+    NoinfoComponent,
+    ReportComponent,
+    ReturnsCountComponent,
     FaultyItemsCountComponent,
-    FaultyItemsSummaryComponent,
-    ReportComponent
+    NoinfoCountComponent,
+    ReasonKeysComponent
   ],
   imports: [
     BrowserModule,
@@ -71,9 +71,10 @@ const appRoutes: Routes = [
     MatFormFieldModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
-    MatSortModule
+    MatSortModule,
+    MatTabsModule
   ],
-  providers: [ProductService],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

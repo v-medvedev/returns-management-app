@@ -3,28 +3,28 @@ import { MatSort, MatTableDataSource } from '@angular/material';
 
 import { AppComponent } from '../app.component';
 
-export interface ReturnItemCount {
+export interface NoInfoItemCount {
   dateOfReturn: Date,
   returnNumber: number;
 }
 
 @Component({
-  selector: 'app-returns-count',
-  templateUrl: './returns-count.component.html',
-  styleUrls: ['./returns-count.component.css']
+  selector: 'app-noinfo-count',
+  templateUrl: './noinfo-count.component.html',
+  styleUrls: ['./noinfo-count.component.css']
 })
-export class ReturnsCountComponent implements OnInit {
+export class NoinfoCountComponent implements OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
   displayedColumns: string[] = ['dateOfReturn', 'returnNumber'];
-  dataSource = new MatTableDataSource<ReturnItemCount>();
+  dataSource = new MatTableDataSource<NoInfoItemCount>();
   
   constructor(private appComponent: AppComponent) { }
 
   ngOnInit() {
-    const tableData: ReturnItemCount[] = [];
-    let countObj = this.appComponent.dataSourceReturns.data.reduce((acc, obj) => {
+    const tableData: NoInfoItemCount[] = [];
+    let countObj = this.appComponent.dataSourceNoInfo.data.reduce((acc, obj) => {
       acc[obj.dateOfReturn.toString()] = (acc[obj.dateOfReturn.toString()] || 0) + obj.returnNumber;
       return acc;
     }, {});

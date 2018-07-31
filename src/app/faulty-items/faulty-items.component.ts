@@ -64,16 +64,19 @@ export class FaultyItemsComponent implements OnInit, OnDestroy {
 
   selectRow(data: FaultyItem, index: number) {
     this.faultyItem = Object.assign({}, data);
+    let selectionState: boolean;
     // update selection
     this.dataSource.data.forEach((element, i) => {
-      if (i != index + 1) {
+      if (element.id != this.faultyItem.id) {
         element.isSelected = false;
+        selectionState = false;
       } else {
         element.isSelected = !element.isSelected;
+        selectionState = element.isSelected;
       }      
     });
     // adjust buttons
-    if (!this.dataSource.data[index+1].isSelected) {
+    if (!selectionState) {
       this.faultyItem = this.resetItem();
     } else {
       this.isEditProduct = true;

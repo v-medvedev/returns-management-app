@@ -1,12 +1,16 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  <ng-container matColumnDef="dateOfReturn">
-    <th mat-header-cell *matHeaderCellDef style="width: 50%;"> Date of Return </th>
-    <td mat-cell *matCellDef="let element"> {{element.dateOfReturn | date : 'dd/MM/yyyy'}} </td>
-  </ng-container>
-  <ng-container matColumnDef="numberOfReturns">
-    <th mat-header-cell *matHeaderCellDef style="width: 50%;"> Number of Returns </th>
-    <td mat-cell *matCellDef="let element"> {{element.numberOfReturns}} </td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let i = index; let row; columns: displayedColumns;"></tr>
-</table>
+<div class="container mat-elevation-z8">
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort matSortActive="dateOfReturn" matSortDisableClear matSortDirection="desc" class="mat-elevation-z8">
+      <ng-container matColumnDef="dateOfReturn">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear style="width: 15%;"> Date of Return </th>
+        <td mat-cell *matCellDef="let element"> {{element.dateOfReturn | date : 'dd/MM/yyyy'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="returnNumber">
+        <th mat-header-cell *matHeaderCellDef  style="width: 15%;"> Return Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.returnNumber}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let i = index; let row; columns: displayedColumns;" (click)="selectRow(row, i)" [ngClass]="{'selected': row.isSelected}"></tr>
+    </table>
+  </div>
+</div>

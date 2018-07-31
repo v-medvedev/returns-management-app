@@ -12,16 +12,11 @@
         $action = $params['action'];
 
         //Connect to db
-		// $dbName = "returns-app";	        // <- Database name
-		// $hostname = "localhost";			// <- Localhost always
-		// $username = "root";			    // <- User Login
-        // $password = "Dish%Wooden!8";     // <- User password
-        
-        $dbName = "returns";	            // <- Database name
+		$dbName = "returns-app";	        // <- Database name
 		$hostname = "localhost";			// <- Localhost always
 		$username = "root";			        // <- User Login
-		$password = "";                     // <- User password
-
+        $password = "Dish%Wooden!8";        // <- User password
+        
         $mysqli = new mysqli($hostname, $username, $password, $dbName);
 
         if ($action == 'getReturnItems') {
@@ -161,6 +156,68 @@
             $id = intval($params['id'], 10);
             $sql = "
                 DELETE FROM faulty_items 
+                WHERE 
+                id = " . $id;
+            $result = $mysqli->query($sql);
+            $record = [
+                'id' => $params['id']
+            ];
+            echo json_encode($record);
+        } elseif ($action == 'getNoInfoItems') {
+            $sql = "SELECT * FROM noinfo_items ORDER BY dateOfReturn DESC";
+            $result = $mysqli->query($sql);
+			$records = [];			
+			while ($row = $result->fetch_assoc()) {
+                $records[] = [
+                    'id' => intval($row['id']),
+                    'dateOfReturn' => $row['dateOfReturn'],
+                    'returnNumber' => intval($row['returnNumber'], 10),
+                    'stockNumber' => $row['stockNumber'],
+                    'details' => $row['details']
+                ];
+			}
+			echo json_encode($records);
+        } elseif ($action == 'addNoInfoItem') {
+            $sql = "
+                INSERT INTO noinfo_items 
+                SET 
+                dateOfReturn = '" . $mysqli->real_escape_string($params['dateOfReturn']) . "', 
+                returnNumber = " . $mysqli->real_escape_string($params['returnNumber']) . ", 
+                stockNumber = '" . $mysqli->real_escape_string($params['stockNumber']) . "', 
+                details = '" . $mysqli->real_escape_string($params['details']) . "'";
+            $result = $mysqli->query($sql);
+            $record = [
+                'id' => $mysqli->insert_id,
+                'dateOfReturn' => $params['dateOfReturn'],
+                'returnNumber' => intval($params['returnNumber']),
+                'stockNumber' => $params['stockNumber'],
+                'details' => $params['details']
+            ];
+            echo json_encode($record);
+        } elseif ($action == 'editNoInfoItem') {
+            $id = intval($params['id'], 10);
+            $sql = "
+                UPDATE noinfo_items 
+                SET 
+                dateOfReturn = '" . $mysqli->real_escape_string($params['dateOfReturn']) . "', 
+                returnNumber = " . $mysqli->real_escape_string($params['returnNumber']) . ", 
+                stockNumber = '" . $mysqli->real_escape_string($params['stockNumber']) . "', 
+                details = '" . $mysqli->real_escape_string($params['details']) . "' 
+                WHERE 
+                id = " . $id;
+            $result = $mysqli->query($sql);
+            $record = [
+                'id' => $params['id'],
+                'dateOfReturn' => $params['dateOfReturn'],
+                'returnNumber' => intval($params['returnNumber']),
+                'stockNumber' => $params['stockNumber'],
+                'details' => $params['details']
+            ];
+            echo json_encode($record);
+        } elseif ($action == 'deleteNoInfoItem') {
+            $id = intval($params['id'], 10);
+            $sql = "
+                DELETE FROM noinfo_items 
                 WHERE 
                 id = " . $id;
             $result = $mysqli->query($sql);

@@ -213,7 +213,7 @@ export class ReportComponent implements OnInit {
     
     var doc = new jsPDF();
 
-    doc.addImage('../assets/logo.png', 'PNG', 150, 1, 50, 30);
+    doc.addImage('./assets/logo.png', 'PNG', 150, 1, 50, 30);
 
     doc.setFontSize(22);
     doc.setFontType('bold');

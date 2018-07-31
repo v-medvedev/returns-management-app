@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 
-import { ProductService, ReturnItem, FaultyItem } from './product.service';
+import { ProductService, ReturnItem, FaultyItem, NoInfoItem } from './product.service';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
   
   dataSourceReturns = new MatTableDataSource<ReturnItem>();
   dataSourceFaulty = new MatTableDataSource<FaultyItem>();
+  dataSourceNoInfo = new MatTableDataSource<NoInfoItem>();
 
   constructor(private productService: ProductService) { }
 
@@ -26,6 +27,12 @@ export class AppComponent implements OnInit {
     this.productService.getFaultyItems().subscribe(data => {
       this.dataSourceFaulty.data = data.map(item => {
         item.reasonCode = JSON.parse(item.reasonCode.toString());
+        item.isSelected = false;
+        return item;
+      });
+    });
+    this.productService.getNoInfoItems().subscribe(data => {
+      this.dataSourceNoInfo.data = data.map(item => {
         item.isSelected = false;
         return item;
       });

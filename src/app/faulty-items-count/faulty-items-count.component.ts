@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { ProductService } from '../product.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSort, MatTableDataSource } from '@angular/material';
+
+import { AppComponent } from '../app.component';
 
 export interface FaultyItemCount {
-  dateOfReturn: Date;
-  numberOfReturns: number;  
+  dateOfReturn: Date,
+  returnNumber: number;
 }
 
 @Component({
@@ -14,34 +15,27 @@ export interface FaultyItemCount {
 })
 export class FaultyItemsCountComponent implements OnInit {
 
-  displayedColumns: string[] = ['dateOfReturn', 'numberOfReturns'];
-  dataSource = new MatTableDataSource<FaultyItemCount>();
+  @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private productService: ProductService) { }
+  displayedColumns: string[] = ['dateOfReturn', 'returnNumber'];
+  dataSource = new MatTableDataSource<FaultyItemCount>();
+  
+  constructor(private appComponent: AppComponent) { }
 
   ngOnInit() {
-    this.productService.getFaultyItems().subscribe(data => {
-      const countObj = data.reduce((acc, obj) => {
-        acc[obj.dateOfReturn.toString()] = (acc[obj.dateOfReturn.toString()] || 0) + obj.returnNumber;
-        return acc;
-      }, {});
-      console.log(countObj);
-      let tableData: FaultyItemCount[] = [];
-      for (let sDate in countObj) {
-        tableData.push({
-          dateOfReturn: new Date(sDate), 
-          numberOfReturns: parseInt(countObj[sDate])
-        });
-      }
-      tableData.sort((a, b) => {
-        if (a.dateOfReturn < b.dateOfReturn) {
-          return -1;
-        } else {
-          return 1;
-        }
+    const tableData: FaultyItemCount[] = [];
+    let countObj = this.appComponent.dataSourceFaulty.data.reduce((acc, obj) => {
+      acc[obj.dateOfReturn.toString()] = (acc[obj.dateOfReturn.toString()] || 0) + obj.returnNumber;
+      return acc;
+    }, {});
+    for (let sDate in countObj) {
+      tableData.push({
+        dateOfReturn: new Date(sDate),
+        returnNumber: parseInt(countObj[sDate])
       });
-      this.dataSource.data = tableData;
-    });
+    }
+    this.dataSource.data = tableData;
+    this.dataSource.sort = this.sort;
   }
 
 }

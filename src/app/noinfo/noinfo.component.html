@@ -1,0 +1,45 @@
+<div class="container mat-elevation-z8">
+  <form>
+    <mat-form-field class='dt-picker' style="width: 15%;">
+      <input matInput [matDatepicker]="picker" placeholder="Date of Return" [(ngModel)]="noInfoItem.dateOfReturn" [ngModelOptions]="{standalone: true}">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field style="width: 15%;">
+      <input matInput placeholder="Return Number" [(ngModel)]="noInfoItem.returnNumber" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field style="width: 25%;">
+      <input matInput placeholder="StockNumber" [(ngModel)]="noInfoItem.stockNumber" [ngModelOptions]="{standalone: true}" #input (input)="input.value=$event.target.value.toUpperCase()">
+    </mat-form-field>
+    <mat-form-field style="width: 45%;">
+      <input matInput placeholder="Details" [(ngModel)]="noInfoItem.details" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+  </form>
+  <div class="button-row">
+    <button mat-raised-button color="warn" [disabled]="isEditProduct" (click)="addProduct()">Add Product</button>
+    <button mat-raised-button color="warn" [disabled]="!isEditProduct" (click)="editProduct()">Edit Product</button>
+    <button mat-raised-button color="warn" [disabled]="!isEditProduct" (click)="deleteProduct()">Delete Product</button>
+  </div>
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort matSortActive="dateOfReturn" matSortDisableClear matSortDirection="desc" class="mat-elevation-z8">
+      <ng-container matColumnDef="dateOfReturn">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear style="width: 15%;"> Date of Return </th>
+        <td mat-cell *matCellDef="let element"> {{element.dateOfReturn | date : 'dd/MM/yyyy'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="returnNumber">
+        <th mat-header-cell *matHeaderCellDef  style="width: 15%;"> Return Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.returnNumber}} </td>
+      </ng-container>
+      <ng-container matColumnDef="stockNumber">
+        <th mat-header-cell *matHeaderCellDef style="width: 25%;"> SKU </th>
+        <td mat-cell *matCellDef="let element"> {{element.stockNumber}} </td>
+      </ng-container>
+      <ng-container matColumnDef="details">
+        <th mat-header-cell *matHeaderCellDef style="width: 45%;"> Details </th>
+        <td mat-cell *matCellDef="let element"> {{element.details}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let i = index; let row; columns: displayedColumns;" (click)="selectRow(row, i)" [ngClass]="{'selected': row.isSelected}"></tr>
+    </table>
+  </div>
+</div>
