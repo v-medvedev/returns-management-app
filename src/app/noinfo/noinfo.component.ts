@@ -16,7 +16,6 @@ export class NoinfoComponent implements OnInit {
   displayedColumns: string[] = ['dateOfReturn', 'returnNumber', 'stockNumber', 'details'];
   dataSource = new MatTableDataSource<NoInfoItem>();
   isEditProduct: boolean = false;
-  editProductIdx: number = -1;
   editedProduct: NoInfoItem = null;
 
   noInfoItem?: NoInfoItem = {
@@ -43,9 +42,8 @@ export class NoinfoComponent implements OnInit {
     let selectionState: boolean;
     // update selection
     this.dataSource.data.forEach((element, i) => {
-      if (element.id != this.noInfoItem.id) {
+      if (element.id != data.id) {
         element.isSelected = false;
-        selectionState = false;
       } else {
         element.isSelected = !element.isSelected;
         selectionState = element.isSelected;
@@ -57,7 +55,6 @@ export class NoinfoComponent implements OnInit {
     } else {
       this.isEditProduct = true;
       this.editedProduct = data;
-      this.editProductIdx = index+1;
     }
   }
 
@@ -100,7 +97,6 @@ export class NoinfoComponent implements OnInit {
 
   resetItem(): NoInfoItem {
     this.isEditProduct = false;
-    this.editProductIdx = -1;
     return {
       dateOfReturn: new Date(),
       returnNumber: 1,

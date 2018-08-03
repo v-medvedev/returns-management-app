@@ -21,7 +21,6 @@ export class FaultyItemsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['dateOfReturn', 'magentoOrderNo', 'returnNumber', 'stockNumber', 'reasonCode', 'faultDescription'];
   dataSource = new MatTableDataSource<FaultyItem>();
   isEditProduct: boolean = false;
-  editProductIdx: number = -1;
   editedProduct: FaultyItem = null;
 
   reasonCodes: IReasonCode[] = [
@@ -62,14 +61,13 @@ export class FaultyItemsComponent implements OnInit, OnDestroy {
     this.appComponent.dataSourceFaulty = this.dataSource;
   }
 
-  selectRow(data: FaultyItem, index: number) {
+  selectRow(data: FaultyItem) {
     this.faultyItem = Object.assign({}, data);
     let selectionState: boolean;
     // update selection
     this.dataSource.data.forEach((element, i) => {
-      if (element.id != this.faultyItem.id) {
+      if (element.id != data.id) {
         element.isSelected = false;
-        selectionState = false;
       } else {
         element.isSelected = !element.isSelected;
         selectionState = element.isSelected;
@@ -81,7 +79,6 @@ export class FaultyItemsComponent implements OnInit, OnDestroy {
     } else {
       this.isEditProduct = true;
       this.editedProduct = data;
-      this.editProductIdx = index+1;
     }
   }
 
@@ -126,7 +123,6 @@ export class FaultyItemsComponent implements OnInit, OnDestroy {
 
   resetItem(): FaultyItem {
     this.isEditProduct = false;
-    this.editProductIdx = -1;
     return {
       dateOfReturn: new Date(),
       magentoOrderNo: '',

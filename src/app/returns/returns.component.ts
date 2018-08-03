@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
-
 import { AppComponent } from '../app.component';
 import { ProductService, ReturnItem } from '../product.service';
 
@@ -21,7 +20,6 @@ export class ReturnsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['dateOfReturn', 'magentoOrderNo', 'returnNumber', 'stockNumber', 'reasonCode', 'packingNumber'];
   dataSource? = new MatTableDataSource<ReturnItem>();
   isEditProduct: boolean = false;
-  editProductIdx: number = -1;
   editedProduct: ReturnItem = null;
   
   reasonCodes: IReasonCode[] = [
@@ -58,14 +56,13 @@ export class ReturnsComponent implements OnInit, OnDestroy {
     this.appComponent.dataSourceReturns = this.dataSource;
   }
 
-  selectRow(data: ReturnItem, index: number) {
+  selectRow(data: ReturnItem) {
     this.returnItem = Object.assign({}, data);
     let selectionState: boolean;
     // update selection
     this.dataSource.data.forEach((element, i) => {
-      if (element.id != this.returnItem.id) {
+      if (element.id != data.id) {
         element.isSelected = false;
-        selectionState = false;
       } else {
         element.isSelected = !element.isSelected;
         selectionState = element.isSelected;
@@ -77,7 +74,6 @@ export class ReturnsComponent implements OnInit, OnDestroy {
     } else {
       this.isEditProduct = true;
       this.editedProduct = data;
-      this.editProductIdx = index+1;
     }
   }
 
@@ -122,7 +118,6 @@ export class ReturnsComponent implements OnInit, OnDestroy {
 
   resetItem(): ReturnItem {
     this.isEditProduct = false;
-    this.editProductIdx = -1;
     return {
       dateOfReturn: new Date(),
       magentoOrderNo: '',
