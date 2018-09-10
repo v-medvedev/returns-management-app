@@ -20,6 +20,8 @@ import { FaultyItemsComponent } from './faulty-items/faulty-items.component';
 import { FaultyItemsCountComponent } from './faulty-items-count/faulty-items-count.component';
 import { NoinfoComponent } from './noinfo/noinfo.component';
 import { NoinfoCountComponent } from './noinfo-count/noinfo-count.component';
+import { NotProcessedComponent } from './not-processed/not-processed.component';
+import { NotProcessedCountComponent } from './not-processed-count/not-processed-count.component';
 import { ReportComponent } from './report/report.component';
 import { ReasonKeysComponent } from './reason-keys/reason-keys.component';
 
@@ -31,6 +33,8 @@ const appRoutes: Routes = [
   { path: 'faulty-count', component: FaultyItemsCountComponent },
   { path: 'no-info', component: NoinfoComponent },
   { path: 'no-info-count', component: NoinfoCountComponent },
+  { path: 'not-processed', component: NotProcessedComponent },
+  { path: 'not-processed-count', component: NotProcessedCountComponent },
   { path: 'report', component: ReportComponent },
   { path: 'reason-keys', component: ReasonKeysComponent },
   { path: '**', redirectTo: 'returns' }
@@ -43,11 +47,13 @@ const appRoutes: Routes = [
     ReturnsComponent,
     FaultyItemsComponent,
     NoinfoComponent,
+    NotProcessedComponent,
+    NotProcessedCountComponent,
     ReportComponent,
     ReturnsCountComponent,
     FaultyItemsCountComponent,
     NoinfoCountComponent,
-    ReasonKeysComponent
+    ReasonKeysComponent,
   ],
   imports: [
     BrowserModule,

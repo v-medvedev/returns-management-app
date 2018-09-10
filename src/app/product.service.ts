@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 
 export interface ReturnItem {
-  id?: number,
+  id?: number;
   dateOfReturn: Date;
   magentoOrderNo: string;
   returnNumber: number;
@@ -15,7 +15,7 @@ export interface ReturnItem {
 }
 
 export interface FaultyItem {
-  id?: number,
+  id?: number;
   dateOfReturn: Date;
   magentoOrderNo: string;
   returnNumber: number;
@@ -26,7 +26,7 @@ export interface FaultyItem {
 }
 
 export interface NoInfoItem {
-  id?: number,
+  id?: number;
   dateOfReturn: Date;
   returnNumber: number;
   stockNumber: string;
@@ -34,9 +34,20 @@ export interface NoInfoItem {
   isSelected?: boolean;
 }
 
+export interface NotProcessedItem {
+  id?: number;
+  dateOfReturn: Date;
+  magentoOrderNo: string;
+  returnNumber: number;
+  stockNumber: string;
+  reasonCode: string[];
+  packingNumber: string;
+  isSelected?: boolean;
+}
+
 export interface ReportData {
-  returns: ReturnItem[],
-  faulty_items: FaultyItem[]
+  returns: ReturnItem[];
+  faulty_items: FaultyItem[];
 }
 
 @Injectable({
@@ -44,27 +55,27 @@ export interface ReportData {
 })
 export class ProductService {
 
-  private baseURL_Api_Endpoint: string = './api.php';
+  private baseURL_Api_Endpoint = './api.php';
   // private baseURL_Api_Endpoint: string = 'http://localhost/api.php';
-  
+
   constructor(private http: HttpClient) { }
 
   getReportDate(d: Date): string {
-    let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return monthNames[d.getMonth()] + "-" + d.getFullYear();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNames[d.getMonth()] + '-' + d.getFullYear();
   }
 
   // Return Items
 
   getReturnItems(): Observable<ReturnItem[]> {
-    let params = {
+    const params = {
       action: 'getReturnItems'
     };
     return this.http.get<ReturnItem[]>(this.baseURL_Api_Endpoint, {params: params});
   }
 
   addReturnItem(product: ReturnItem): Observable<ReturnItem> {
-    let params = {
+    const params = {
       action: 'addReturnItem',
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
       magentoOrderNo: product.magentoOrderNo.toString(),
@@ -77,7 +88,7 @@ export class ProductService {
   }
 
   editReturnItem(product: ReturnItem, id: number): Observable<ReturnItem> {
-    let params = {
+    const params = {
       action: 'editReturnItem',
       id: id.toString(),
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
@@ -91,7 +102,7 @@ export class ProductService {
   }
 
   deleteReturnItem(id: number): Observable<any> {
-    let params = {
+    const params = {
       action: 'deleteReturnItem',
       id: id.toString()
     };
@@ -101,14 +112,14 @@ export class ProductService {
   // Faulty Items
 
   getFaultyItems(): Observable<FaultyItem[]> {
-    let params = {
+    const params = {
       action: 'getFaultyItems'
     };
     return this.http.get<FaultyItem[]>(this.baseURL_Api_Endpoint, {params: params});
   }
 
   addFaultyItem(product: FaultyItem): Observable<FaultyItem> {
-    let params = {
+    const params = {
       action: 'addFaultyItem',
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
       magentoOrderNo: product.magentoOrderNo.toString(),
@@ -121,7 +132,7 @@ export class ProductService {
   }
 
   editFaultyItem(product: FaultyItem, id: number): Observable<FaultyItem> {
-    let params = {
+    const params = {
       action: 'editFaultyItem',
       id: id.toString(),
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
@@ -135,7 +146,7 @@ export class ProductService {
   }
 
   deleteFaultyItem(id: number): Observable<any> {
-    let params = {
+    const params = {
       action: 'deleteFaultyItem',
       id: id.toString()
     };
@@ -145,14 +156,14 @@ export class ProductService {
   // No Info Items
 
   getNoInfoItems(): Observable<NoInfoItem[]> {
-    let params = {
+    const params = {
       action: 'getNoInfoItems'
     };
     return this.http.get<NoInfoItem[]>(this.baseURL_Api_Endpoint, {params: params});
   }
 
   addNoInfoItem(product: NoInfoItem): Observable<NoInfoItem> {
-    let params = {
+    const params = {
       action: 'addNoInfoItem',
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
       returnNumber: product.returnNumber.toString(),
@@ -163,7 +174,7 @@ export class ProductService {
   }
 
   editNoInfoItem(product: NoInfoItem, id: number): Observable<NoInfoItem> {
-    let params = {
+    const params = {
       action: 'editNoInfoItem',
       id: id.toString(),
       dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
@@ -175,8 +186,52 @@ export class ProductService {
   }
 
   deleteNoInfoItem(id: number): Observable<any> {
-    let params = {
+    const params = {
       action: 'deleteNoInfoItem',
+      id: id.toString()
+    };
+    return this.http.get(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  // Not Processed Items
+
+  getNotProcessedItems(): Observable<NotProcessedItem[]> {
+    const params = {
+      action: 'getNotProcessedItems'
+    };
+    return this.http.get<NotProcessedItem[]>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  addNotProcessedItem(product: NotProcessedItem): Observable<NotProcessedItem> {
+    const params = {
+      action: 'addNotProcessedItem',
+      dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
+      magentoOrderNo: product.magentoOrderNo.toString(),
+      returnNumber: product.returnNumber.toString(),
+      stockNumber: product.stockNumber.toString(),
+      reasonCode: JSON.stringify(product.reasonCode),
+      packingNumber: product.packingNumber.toString()
+    };
+    return this.http.get<NotProcessedItem>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  editNotProcessedItem(product: NotProcessedItem, id: number): Observable<NotProcessedItem> {
+    const params = {
+      action: 'editNotProcessedItem',
+      id: id.toString(),
+      dateOfReturn: moment(product.dateOfReturn).format('YYYY-MM-DD'),
+      magentoOrderNo: product.magentoOrderNo.toString(),
+      returnNumber: product.returnNumber.toString(),
+      stockNumber: product.stockNumber.toString(),
+      reasonCode: JSON.stringify(product.reasonCode),
+      packingNumber: product.packingNumber.toString()
+    };
+    return this.http.get<NotProcessedItem>(this.baseURL_Api_Endpoint, {params: params});
+  }
+
+  deleteNotProcessedItem(id: number): Observable<any> {
+    const params = {
+      action: 'deleteNotProcessedItem',
       id: id.toString()
     };
     return this.http.get(this.baseURL_Api_Endpoint, {params: params});
@@ -185,7 +240,7 @@ export class ProductService {
   // Report
 
   getReportData(dFrom: string, dTo: string): Observable<ReportData> {
-    let params = {
+    const params = {
       action: 'getReportData',
       dFrom: dFrom,
       dTo: dTo

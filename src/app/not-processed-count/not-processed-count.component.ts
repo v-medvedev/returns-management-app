@@ -3,28 +3,28 @@ import { MatSort, MatTableDataSource } from '@angular/material';
 
 import { AppComponent } from '../app.component';
 
-export interface NoInfoItemCount {
-  dateOfReturn: Date,
+export interface NotProcessedItemCount {
+  dateOfReturn: Date;
   returnNumber: number;
 }
 
 @Component({
-  selector: 'app-noinfo-count',
-  templateUrl: './noinfo-count.component.html',
-  styleUrls: ['./noinfo-count.component.css']
+  selector: 'app-not-processed-count',
+  templateUrl: './not-processed-count.component.html',
+  styleUrls: ['./not-processed-count.component.css']
 })
-export class NoinfoCountComponent implements OnInit {
+export class NotProcessedCountComponent implements OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
   displayedColumns: string[] = ['dateOfReturn', 'returnNumber'];
-  dataSource = new MatTableDataSource<NoInfoItemCount>();
+  dataSource = new MatTableDataSource<NotProcessedItemCount>();
 
   constructor(private appComponent: AppComponent) { }
 
   ngOnInit() {
-    const tableData: NoInfoItemCount[] = [];
-    let countObj = this.appComponent.dataSourceNoInfo.data.reduce((acc, obj) => {
+    const tableData: NotProcessedItemCount[] = [];
+    let countObj = this.appComponent.dataSourceNotProcessed.data.reduce((acc, obj) => {
       acc[obj.dateOfReturn.toString()] = (acc[obj.dateOfReturn.toString()] || 0) + obj.returnNumber;
       return acc;
     }, {});
@@ -37,5 +37,6 @@ export class NoinfoCountComponent implements OnInit {
     this.dataSource.data = tableData;
     this.dataSource.sort = this.sort;
   }
+
 
 }

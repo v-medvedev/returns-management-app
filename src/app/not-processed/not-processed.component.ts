@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
 import { AppComponent } from '../app.component';
-import { ProductService, ReturnItem } from '../product.service';
+import { ProductService, NotProcessedItem } from '../product.service';
 
 export interface IReasonCode {
   value: string;
@@ -9,18 +9,18 @@ export interface IReasonCode {
 }
 
 @Component({
-  selector: 'app-returns',
-  templateUrl: './returns.component.html',
-  styleUrls: ['./returns.component.css']
+  selector: 'app-not-processed',
+  templateUrl: './not-processed.component.html',
+  styleUrls: ['./not-processed.component.css']
 })
-export class ReturnsComponent implements OnInit, OnDestroy {
+export class NotProcessedComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
 
   displayedColumns: string[] = ['dateOfReturn', 'magentoOrderNo', 'returnNumber', 'stockNumber', 'reasonCode', 'packingNumber'];
-  dataSource? = new MatTableDataSource<ReturnItem>();
-  isEditProduct: boolean = false;
-  editedProduct: ReturnItem = null;
+  dataSource = new MatTableDataSource<NotProcessedItem>();
+  isEditProduct = false;
+  editedProduct: NotProcessedItem = null;
 
   reasonCodes: IReasonCode[] = [
     { value: '1', viewValue: 'Dont like the item' },
@@ -35,7 +35,7 @@ export class ReturnsComponent implements OnInit, OnDestroy {
     { value: '0', viewValue: 'No reason' }
   ];
 
-  returnItem?: ReturnItem = {
+  notProcessedItem?: NotProcessedItem = {
     dateOfReturn: new Date(),
     magentoOrderNo: '',
     returnNumber: 1,
@@ -48,20 +48,20 @@ export class ReturnsComponent implements OnInit, OnDestroy {
   constructor(private productService: ProductService, private appComponent: AppComponent) { }
 
   ngOnInit() {
-    this.dataSource = this.appComponent.dataSourceReturns;
+    this.dataSource = this.appComponent.dataSourceNotProcessed;
     this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy(): void {
-    this.appComponent.dataSourceReturns = this.dataSource;
+    this.appComponent.dataSourceNotProcessed = this.dataSource;
   }
 
-  selectRow(data: ReturnItem) {
-    this.returnItem = Object.assign({}, data);
+  selectRow(data: NotProcessedItem) {
+    this.notProcessedItem = Object.assign({}, data);
     let selectionState: boolean;
     // update selection
     this.dataSource.data.forEach((element, i) => {
-      if (element.id != data.id) {
+      if (element.id !== data.id) {
         element.isSelected = false;
       } else {
         element.isSelected = !element.isSelected;
@@ -70,7 +70,7 @@ export class ReturnsComponent implements OnInit, OnDestroy {
     });
     // adjust buttons
     if (!selectionState) {
-      this.returnItem = this.resetItem();
+      this.notProcessedItem = this.resetItem();
     } else {
       this.isEditProduct = true;
       this.editedProduct = data;
@@ -78,22 +78,22 @@ export class ReturnsComponent implements OnInit, OnDestroy {
   }
 
   addProduct() {
-    this.productService.addReturnItem(Object.assign({}, this.returnItem)).subscribe(data => {
+    this.productService.addNotProcessedItem(Object.assign({}, this.notProcessedItem)).subscribe(data => {
       data.isSelected = false;
       data.reasonCode = JSON.parse(data.reasonCode.toString());
       const tableData = this.dataSource.data;
       tableData.push(data);
       this.dataSource.data = tableData;
     });
-    this.returnItem = this.resetItem();
+    this.notProcessedItem = this.resetItem();
   }
 
   editProduct() {
-    this.editedProduct = Object.assign({}, this.returnItem);
-    this.productService.editReturnItem(Object.assign({}, this.returnItem), this.editedProduct.id).subscribe(data => {
+    this.editedProduct = Object.assign({}, this.notProcessedItem);
+    this.productService.editNotProcessedItem(Object.assign({}, this.notProcessedItem), this.editedProduct.id).subscribe(data => {
       const tableData = this.dataSource.data.map(item => {
         item.isSelected = false;
-        if (item.id == this.editedProduct.id) {
+        if (item.id === this.editedProduct.id) {
           data.reasonCode = JSON.parse(data.reasonCode.toString());
           item = data;
         }
@@ -101,22 +101,22 @@ export class ReturnsComponent implements OnInit, OnDestroy {
       });
       this.dataSource.data = tableData;
     });
-    this.returnItem = this.resetItem();
+    this.notProcessedItem = this.resetItem();
   }
 
   deleteProduct() {
     const tableData = this.dataSource.data;
-    this.productService.deleteReturnItem(this.editedProduct.id).subscribe(data => {
+    this.productService.deleteNotProcessedItem(this.editedProduct.id).subscribe(data => {
       const tableData = this.dataSource.data.filter(item => {
         item.isSelected = false;
-        return item.id != this.editedProduct.id;
+        return item.id !== this.editedProduct.id;
       });
       this.dataSource.data = tableData;
     });
-    this.returnItem = this.resetItem();
+    this.notProcessedItem = this.resetItem();
   }
 
-  resetItem(): ReturnItem {
+  resetItem(): NotProcessedItem {
     this.isEditProduct = false;
     return {
       dateOfReturn: new Date(),

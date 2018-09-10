@@ -1,0 +1,17 @@
+.container {
+  position: relative;
+}
+
+.table-container {
+  position: relative;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+[mat-table] {
+  width: 100%;
+}
+
+[mat-table] tr[mat-row] {
+  cursor: pointer;
+}

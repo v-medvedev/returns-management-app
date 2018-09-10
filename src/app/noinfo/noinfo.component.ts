@@ -2,20 +2,20 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatSort, MatTableDataSource } from '@angular/material';
 
 import { AppComponent } from '../app.component';
-import { ProductService, NoInfoItem } from '../product.service';  
+import { ProductService, NoInfoItem } from '../product.service';
 
 @Component({
   selector: 'app-noinfo',
   templateUrl: './noinfo.component.html',
   styleUrls: ['./noinfo.component.css']
 })
-export class NoinfoComponent implements OnInit {
+export class NoinfoComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
 
   displayedColumns: string[] = ['dateOfReturn', 'returnNumber', 'stockNumber', 'details'];
   dataSource = new MatTableDataSource<NoInfoItem>();
-  isEditProduct: boolean = false;
+  isEditProduct = false;
   editedProduct: NoInfoItem = null;
 
   noInfoItem?: NoInfoItem = {
@@ -42,12 +42,12 @@ export class NoinfoComponent implements OnInit {
     let selectionState: boolean;
     // update selection
     this.dataSource.data.forEach((element, i) => {
-      if (element.id != data.id) {
+      if (element.id !== data.id) {
         element.isSelected = false;
       } else {
         element.isSelected = !element.isSelected;
         selectionState = element.isSelected;
-      }      
+      }
     });
     // adjust buttons
     if (!selectionState) {
@@ -73,7 +73,7 @@ export class NoinfoComponent implements OnInit {
     this.productService.editNoInfoItem(Object.assign({}, this.noInfoItem), this.editedProduct.id).subscribe(data => {
       const tableData = this.dataSource.data.map(item => {
         item.isSelected = false;
-        if (item.id == this.editedProduct.id) {
+        if (item.id === this.editedProduct.id) {
           item = data;
         }
         return item;
@@ -86,9 +86,9 @@ export class NoinfoComponent implements OnInit {
   deleteProduct() {
     const tableData = this.dataSource.data;
     this.productService.deleteNoInfoItem(this.editedProduct.id).subscribe(data => {
-      const tableData = this.dataSource.data.filter(item => {
+      let tableData = this.dataSource.data.filter(item => {
         item.isSelected = false;
-        return item.id != this.editedProduct.id;
+        return item.id !== this.editedProduct.id;
       });
       this.dataSource.data = tableData;
     });
